@@ -11,7 +11,7 @@ data FTree a = FTree { root :: Maybe (FNode a)
                      }
 
 data FNode a = Node { psum        :: Val,
-                      left, right :: FTree a
+                      left, right :: FNode a
                     }
              | Leaf { v, psum :: Val,
                       content :: a
@@ -42,7 +42,12 @@ invQuery :: Val -> FTree a -> a
 invQuery = undefined
 
 toList :: FTree a -> [a]
-toList = undefined
+toList (FTree { root=Nothing   }) = []
+toList (FTree { root=Just node }) = toList' node []
+
+toList' (Leaf { content = c }) cont = c:cont
+toList' (Node { left  = l
+              , right = r })   cont = toList' l $ toList' r cont
 
 toFreqList :: FTree a -> [(Double, a)]
 toFreqList = undefined
