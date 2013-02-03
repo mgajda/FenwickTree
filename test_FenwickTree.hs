@@ -8,8 +8,11 @@ import Test.QuickCheck
 import Test.QuickCheck.All
 
 emptyFT :: FTree (Double, Double)
-emptyFT = empty (\(pos, freq) -> freq) (\(pos1, _) (pos2, _) -> pos1 `compare` pos2)
+emptyFT = empty getFreq cmpFst
 
+getFreq (pos, freq)         = freq
+
+cmpFst  (pos1, _) (pos2, _) = pos1 `compare` pos2
 
 -- Prepare a list of unique values
 
@@ -39,6 +42,10 @@ lookupFL a ((f, b):_ ) | a == b = f
 lookupFL a ((f, b):cs)          = lookupFL a cs
 lookupFL a []                   = 0.0
 -- prop_insert_freqList
+
+prop_toList_fromList ls = toList (fromList cmpFst getFreq uls) == uls
+  where
+    uls = sort $ uniq ls
 
 main = $quickCheckAll
 

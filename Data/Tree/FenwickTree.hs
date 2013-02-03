@@ -58,8 +58,20 @@ query' cmp a (Node { psum  = p
                                       LT ->     query' cmp a l
                                       EQ -> p
 
-invQuery :: Val -> FTree a -> a
-invQuery = undefined
+invQuery :: Val -> FTree a -> Maybe a
+invQuery v ft = invQuery' v (root ft)
+
+invQuery' :: Val -> FNode a -> Maybe a 
+invQuery' v Leaf = Nothing
+invQuery' v (Node { psum  = p
+                  , split = s
+                  , left  = l
+                  , right = r }) = case v `compare` p of
+                                     EQ -> Just s
+                                     GT -> invQuery' v r
+                                     LT -> case invQuery' v l of
+                                             Just r  -> Just r
+                                             Nothing -> Just s
 
 toList :: FTree a -> [a]
 toList ft = toList' (root ft) []
@@ -81,5 +93,28 @@ toFreqList' cSum (Node { split = s
   where
     nSum = p+cSum
 
-fromList = undefined
+fromList cmp val ls = FTree { cmp  = cmp
+                            , val  = val
+                            , root = fromList' cmp val l ls
+                            }
+  where
+    l = length ls
+
+fromList' cmp val 0 [ ] = Leaf
+fromList' cmp val 1 [a] = Node { split = a
+                               , psum  = val a
+                               , left  = Leaf
+                               , right = Leaf
+                               }
+fromList' cmp val n ls = Node { split = a
+                              , psum  = val a
+                              , left  = fromList' cmp val n'  lsLeft
+                              , right = fromList' cmp val n'' lsRight
+                              }
+  where
+    a       = head rest
+    lsRight = tail rest
+    (lsLeft, rest) = splitAt n' ls
+    n'  = n `div` 2
+    n'' = n - n' - 1
 
