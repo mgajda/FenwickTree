@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 module Main where
 
-import Data.Tree.FenwickTree
+import Data.Tree.Fenwick
 import Data.List(sort)
 
 import Test.QuickCheck

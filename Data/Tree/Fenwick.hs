@@ -1,9 +1,9 @@
 {-# LANGUAGE BangPatterns #-}
-module Data.Tree.FenwickTree(FTree,
-                             empty, insert,
-                             query, invQuery,
-                             toList, toFreqList,
-                             fromList) where
+module Data.Tree.Fenwick(FTree,
+                         empty, insert,
+                         query, invQuery,
+                         toList, toFreqList,
+                         fromList) where
 
 import Control.Exception(assert) -- DEBUG
 import Data.List(sortBy)
