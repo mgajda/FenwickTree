@@ -110,8 +110,7 @@ fromList' cmp val 1 [a] = Node { split = a
                                , left  = Leaf
                                , right = Leaf
                                }
-fromList' cmp val n ls = assertions $
-                           Node { split = a
+fromList' cmp val n ls =   Node { split = a
                                 , psum  = val a
                                 , left  = fromList' cmp val n'  lsLeft
                                 , right = fromList' cmp val n'' lsRight
@@ -122,8 +121,9 @@ fromList' cmp val n ls = assertions $
     (lsLeft, rest) = splitAt n' ls
     n'  = n `div` 2
     n'' = n - n' - 1
+{-
     assertions r = assert (n' + n'' + 1 == n) $
                    assert (length lsRight == n'') $
                    assert (length lsLeft  == n' ) $
                    r
-
+-}
