@@ -1,4 +1,4 @@
-module Data.Tree.FenwickTree(FTree, insert, query, invQuery) where
+module Data.Tree.FenwickTree(FTree, empty, insert, query, invQuery, toList, toFreqList) where
 
 type Val = Double
 
