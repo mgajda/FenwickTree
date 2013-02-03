@@ -65,5 +65,15 @@ prop_toList_fromList ls = toList (fromList cmpFst getFreq uls) == uls
   where
     uls = sort $ uniq ls
 
+prop_size_fromList ls = size (mkTree uls) == length uls
+  where
+    uls = uniq ls
+
+prop_depth_fromList ls = (d <= l) && ((floor . logBase 2 . fromIntegral) l <= d)
+  where
+    d = depth (mkTree uls)
+    l = length uls
+    uls = uniq ls
+
 main = $quickCheckAll
 

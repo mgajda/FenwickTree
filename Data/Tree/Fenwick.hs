@@ -3,9 +3,10 @@ module Data.Tree.Fenwick(FTree,
                          empty, insert,
                          query, invQuery,
                          toList, toFreqList,
-                         fromList) where
+                         fromList,
+                         size, depth) where
 
-import Data.List(sortBy)
+import Data.List(sortBy, foldl')
 -- ^ Fenwick trees are a O(log N) data structure for updating cumulative sums.
 --   This implementation comes with an operation to find a least element for
 --   which real-valued cumulative sum reaches certain value, and allows for
@@ -168,3 +169,17 @@ fromList' cmp val n ls =   Node { split = a
                    assert (length lsLeft  == n' ) $
                    r
 -}
+
+-- | Returns a maximum depth of a tree.
+depth :: FTree a -> Int
+depth = depth' . root
+
+-- | Returns maximum depth of a given subtree.
+depth' Leaf                 = 0
+depth' (Node { left  = l
+             , right = r }) = depth' l `max` depth' r
+
+-- | Returns number of elements in a tree.
+size :: FTree a -> Int
+size = length . toList
+
