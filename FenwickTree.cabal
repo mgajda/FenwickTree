@@ -30,8 +30,7 @@ source-repository head
 Library
   ghc-options:      -fspec-constr-count=4 -O3 
   build-depends:    base>=4.0, base <4.7, template-haskell, QuickCheck >= 2.5.0.0
-  other-extensions:       ScopedTypeVariables OverloadedStrings BangPatterns NoMonomorphismRestriction
-  other-modules:    
+  other-extensions:       ScopedTypeVariables BangPatterns NoMonomorphismRestriction
   exposed-modules:  Data.Tree.FenwickTree
   exposed:          True
 
