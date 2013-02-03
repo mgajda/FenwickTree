@@ -7,6 +7,19 @@ import Data.List(sort)
 import Test.QuickCheck
 import Test.QuickCheck.All
 
+tol = 0.001
+
+infix 4 ==~
+
+class AEq a where
+  (==~) :: a -> a -> Bool
+
+instance AEq Double where
+  (==~) a b = abs (a - b) <= tol
+
+instance (AEq a, AEq b) => AEq (a, b) where
+  (a, b) ==~ (c, d) = (a ==~ c) && (b ==~ d)
+
 emptyFT :: FTree (Double, Double)
 emptyFT = empty getFreq cmpFst
 
@@ -25,7 +38,7 @@ prop_insert_toList ls = toList (mkTree uls) == sort uls
   where
     uls = uniq ls
 
-prop_insert_query_non_zero l ls = query l (insert l ft) == snd l + query l ft
+prop_insert_query_non_zero l ls = query l (insert l ft) ==~ snd l + query l ft
   where
     ft = mkTree $ filter (/=l) ls
 
