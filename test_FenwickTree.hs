@@ -1,5 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module Main( main ) where
+module Main where
 
 import Data.Tree.FenwickTree
 import Data.List(sort)
@@ -19,6 +19,11 @@ instance AEq Double where
 
 instance (AEq a, AEq b) => AEq (a, b) where
   (a, b) ==~ (c, d) = (a ==~ c) && (b ==~ d)
+
+instance (AEq a) => AEq [a] where
+  []     ==~ []     = True
+  (b:bs) ==~ (c:cs) = (b ==~ c) && (bs ==~ cs)
+  _      ==~ _      = False
 
 emptyFT :: FTree (Double, Double)
 emptyFT = empty getFreq cmpFst
@@ -42,18 +47,18 @@ prop_insert_query_non_zero l ls = query l (insert l ft) ==~ snd l + query l ft
   where
     ft = mkTree $ filter (/=l) ls
 
-prop_freqList ls = toFreqList (mkTree uls) == zip (scanr ((+) . snd) 0.0 uls) uls
+prop_freqList ls = toFreqList (mkTree uls) ==~ zip (tail $ scanl (\a b -> snd b + a) 0.0 uls) uls
   where
-    uls = uniq ls
+    uls = uniq $ sort ls
 
-prop_freqList_query l ls = query l ft == lookupFL l (toFreqList ft)
+prop_freqList_query l ls = query l ft ==~ lookupFL l (toFreqList ft)
   where
     uls = uniq ls
     ft  = insert l (mkTree uls)
 
 lookupFL a ((f, b):_ ) | a == b = f
 lookupFL a ((f, b):cs)          = lookupFL a cs
-lookupFL a []                   = 0.0
+lookupFL a  []                  = 0.0
 -- prop_insert_freqList
 
 prop_toList_fromList ls = toList (fromList cmpFst getFreq uls) == uls
