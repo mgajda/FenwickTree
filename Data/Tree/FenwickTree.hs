@@ -1,55 +1,75 @@
 module Data.Tree.FenwickTree(FTree,
                              empty, insert,
                              query, invQuery,
-                             toList, toFreqList, fromList) where
+                             toList, toFreqList,
+                             fromList) where
 
 type Val = Double
 
-data FTree a = FTree { root :: Maybe (FNode a)
+data FTree a = FTree { root :: FNode a
                      , val  :: a -> Val
                      , cmp  :: a -> a -> Ordering
                      }
 
+instance (Show a) => Show (FTree a) where
+  showsPrec _ ft = ("FTree " ++) . shows (root ft)
+
 data FNode a = Node { psum        :: Val,
+                      split       :: a,
                       left, right :: FNode a
                     }
-             | Leaf { v, psum :: Val,
-                      content :: a
-                    }
+             | Leaf
+  deriving (Show)
 
 empty :: (a -> Double) -> (a -> a -> Ordering) -> FTree a
-empty v c = FTree { root   = Nothing
+empty v c = FTree { root   = Leaf
                   , val    = v
                   , cmp    = c
                   }
 
 insert :: a -> FTree a -> FTree a
-insert a ft@(FTree { root = Nothing }) = ft { root = Just $ Leaf { v       = v
-                                                                 , psum    = v
-                                                                 , content = a
-                                                                 }
-                                            }
-  where
-    v = val ft $ a
-insert a ft                            = ft { root = insert' a (val ft) (cmp ft) (root ft) }
+insert a ft = ft { root = insert' a (val ft) (cmp ft) (root ft) }
 
-insert' a ass cmp = undefined
+insert' a val cmp Leaf = Node { psum  = val a
+                              , split = a
+                              , left  = Leaf
+                              , right = Leaf
+                              }
+insert' a val cmp n@(Node { psum  = p
+                          , split = s
+                          , left  = l
+                          , right = r
+                          }) = case a `cmp` s of
+                                 GT -> n { right = insert' a val cmp r }
+                                 LT -> n { psum = p + val a
+                                         , left = insert' a val cmp l }
+                                 EQ -> n { psum = p + val a } -- just adjust frequency
 
-query :: a -> FTree a -> Double
-query = undefined
+query :: a -> FTree a -> Val
+query a ft = query' (cmp ft) a (root ft)
+
+query' cmp a Leaf                 = 0.0
+query' cmp a (Node { psum  = p
+                   , split = s
+                   , left  = l
+                   , right = r }) = case a `cmp` s of
+                                      GT -> p + query' cmp a r
+                                      LT ->     query' cmp a l
+                                      EQ -> p
 
 invQuery :: Val -> FTree a -> a
 invQuery = undefined
 
 toList :: FTree a -> [a]
-toList (FTree { root=Nothing   }) = []
-toList (FTree { root=Just node }) = toList' node []
+toList ft = toList' (root ft) []
 
-toList' (Leaf { content = c }) cont = c:cont
-toList' (Node { left  = l
-              , right = r })   cont = toList' l $ toList' r cont
+toList'  Leaf                  cont = cont
+toList' (Node { split = s
+              , left  = l
+              , right = r })   cont = toList' l $ s:toList' r cont
 
 toFreqList :: FTree a -> [(Double, a)]
 toFreqList = undefined
 
 fromList = undefined
+
