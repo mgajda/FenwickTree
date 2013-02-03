@@ -1,3 +1,4 @@
+{-# LANGUAGE BangPatterns #-}
 module Data.Tree.FenwickTree(FTree,
                              empty, insert,
                              query, invQuery,
@@ -69,7 +70,16 @@ toList' (Node { split = s
               , right = r })   cont = toList' l $ s:toList' r cont
 
 toFreqList :: FTree a -> [(Double, a)]
-toFreqList = undefined
+toFreqList ft = toFreqList' 0.0 (root ft) []
+
+toFreqList' cSum Leaf cont = cont
+toFreqList' cSum (Node { split = s
+                       , psum  = p
+                       , left  = l
+                       , right = r }) cont = toFreqList' cSum l $
+                                             (nSum, s):toFreqList' nSum r []
+  where
+    nSum = p+cSum
 
 fromList = undefined
 
