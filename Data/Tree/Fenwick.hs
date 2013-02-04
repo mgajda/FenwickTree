@@ -177,7 +177,7 @@ depth = depth' . root
 -- | Returns maximum depth of a given subtree.
 depth' Leaf                 = 0
 depth' (Node { left  = l
-             , right = r }) = depth' l `max` depth' r
+             , right = r }) = (depth' l `max` depth' r) + 1
 
 -- | Returns number of elements in a tree.
 size :: FTree a -> Int
