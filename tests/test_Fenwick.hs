@@ -25,12 +25,23 @@ instance (AEq a) => AEq [a] where
   (b:bs) ==~ (c:cs) = (b ==~ c) && (bs ==~ cs)
   _      ==~ _      = False
 
+instance (AEq a) => AEq (Maybe a) where
+  Nothing  ==~ Nothing  = True
+  (Just f) ==~ (Just g) = f ==~ g
+  _        ==~ _        = False
+
 emptyFT :: FTree (Double, Double)
 emptyFT = empty getFreq cmpFst
 
 getFreq (pos, freq)         = freq
 
 cmpFst  (pos1, _) (pos2, _) = pos1 `compare` pos2
+
+absFreq (a, freq) = if aFreq == 0.0
+                      then (a, 0.001)
+                      else (a, aFreq)
+  where
+   aFreq = abs freq
 
 -- Prepare a list of unique values
 
@@ -74,6 +85,18 @@ prop_depth_fromList ls = (d <= l) && ((floor . logBase 2 . fromIntegral) l <= d)
     d = depth (mkTree uls)
     l = length uls
     uls = uniq ls
+
+prop_freqList_invQuery q ls = ((jf /= Nothing) && (sumFreq > 0)) ==> jf ==~ lookupFreq q (toFreqList ft)
+  where
+    jf      = invQuery q ft
+    uls     = uniq $ map absFreq ls
+    ft      = mkTree uls
+    sumFreq = sum $ map snd ls
+
+lookupFreq :: Double -> [(Double, (Double, Double))] -> Maybe (Double, Double)
+lookupFreq q ((f, b):_ ) | q <= f = Just b
+lookupFreq q ((f, b):cs) | q >  f = lookupFreq q cs
+lookupFreq q  []                  = Nothing
 
 main = $quickCheckAll
 
