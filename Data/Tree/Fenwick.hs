@@ -1,4 +1,3 @@
-{-# LANGUAGE BangPatterns #-}
 module Data.Tree.Fenwick(FTree,
                          empty, insert,
                          query, invQuery,
