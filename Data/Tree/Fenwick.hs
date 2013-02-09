@@ -164,7 +164,7 @@ fromList' cmp val n ls =   Node { split = a
     n'' = n - n' - 1
 -- TODO: Make it O(n) by recursion with continuations.
 {-
-    assertions r = assert (n' + n'' + 1 == n) $
+    assertions r = assert (n' + n'' + 1   == n  ) $
                    assert (length lsRight == n'') $
                    assert (length lsLeft  == n' ) $
                    r
