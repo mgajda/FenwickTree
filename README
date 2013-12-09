@@ -1,7 +1,0 @@
-Fenwick trees are a O(log N) data structure for updating cumulative sums.
-This implementation comes with an operation to find a least element for
-which real-valued cumulative sum reaches certain value, and allows for
-storage of arbitrary information in the nodes.
-
-See:
-http://en.wikipedia.org/wiki/Fenwick_tree 
