@@ -10,7 +10,7 @@ storage of arbitrary information in the nodes.
 
 See [description on Wikipedia](http://en.wikipedia.org/wiki/Fenwick_tree).
 
-Official releases are on [Hackage](http://hackage.haskell.org/package/hPDB).
+Official releases are on [Hackage](http://hackage.haskell.org/package/FenwickTree).
 
 This package is also a part of [Stackage](http://daniel-diaz.github.io/stackagelist/)
 - a stable subset of Hackage.
