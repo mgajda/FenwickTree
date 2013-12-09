@@ -1,6 +1,9 @@
 *.o
 *.hi
 dist
+*.tix
+.hpc
+hpc_*.html
 .hpc
 *.html
 tests/test_Fenwick
