@@ -2,7 +2,7 @@ language: haskell
 
 matrix:
   allow_failures:
-    - env: GHCVER=head  CABALVER=1.22
+    - env: GHCVER=head  CABALVER=head
     - env: GHCVER=7.4.2 CABALVER=1.18
 
 env:
